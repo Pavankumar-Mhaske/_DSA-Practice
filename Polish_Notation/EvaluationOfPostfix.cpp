@@ -54,7 +54,6 @@ double evaluatePostfix(const std::string &postfix)
 
     for (auto token : postfix)
     {
-        cout << token << " | " << s.top() << endl;
 
         if (isdigit(token))
         {
