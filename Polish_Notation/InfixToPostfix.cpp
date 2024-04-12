@@ -71,7 +71,9 @@ int main(void)
 {
     try
     {
-        string q = "A+((B+C)+(D+E)*F)/G";
+        // string q = "A+((B+C)+(D+E)*F)/G";
+        string q = "1+((2+3) + (3+4)*5)/6";
+        // string q = "1+((2+3)*2)*2+3";
         cout << "Q : " << q << endl;
         string p = infixToPostfix(q);
         cout << "P : " << p << endl;

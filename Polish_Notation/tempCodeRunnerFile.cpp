@@ -1,1 +1,1 @@
-        cout << "POP : " << s.pop() << endl;
+    cout << endl;
