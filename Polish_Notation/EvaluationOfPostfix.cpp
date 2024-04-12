@@ -77,7 +77,6 @@ double evaluatePostfix(const std::string &postfix)
             s.push(result);
         }
     }
-    cout << endl;
 
     return s.top();
 }
