@@ -83,7 +83,7 @@ int main(void)
         // cout << c << " | " << d;
         // cout << endl;
         // cout << e << " | " << f;
-        }
+    }
     catch (const std::runtime_error &e)
     {
         cerr << "Error : " << e.what() << endl;
