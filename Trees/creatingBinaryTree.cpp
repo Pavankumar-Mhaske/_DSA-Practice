@@ -66,6 +66,11 @@ void buildFromLevelOrder(node *&root)
     cout << "Enter the root data : ";
     cin >> data;
 
+    if (data == -1)
+    {
+        root = nullptr;
+        return;
+    }
     root = new node(data);
     q.push(root);
 
