@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 #include <queue>
+#include <stack>
 
 class node
 {
@@ -41,10 +42,11 @@ void levelOrderTraversal(node *root)
     {
         node *temp = q.front();
         q.pop();
-        if (temp == NULL && !q.empty())
+        if (temp == NULL)
         {
             cout << endl;
-            q.push(NULL);
+            if (!q.empty())
+                q.push(NULL);
         }
         else
         {
@@ -57,6 +59,49 @@ void levelOrderTraversal(node *root)
     }
 }
 
+void rlevelOrderTraversal(node *root)
+{
+    queue<node *> q;
+    stack<node *> s;
+    q.push(root);
+    q.push(NULL);
+
+    while (!q.empty())
+    {
+        node *temp = q.front();
+        q.pop();
+        s.push(temp);
+        if (temp == NULL)
+        {
+            cout << endl;
+            if (!q.empty())
+                q.push(NULL);
+        }
+        else
+        {
+            cout << temp->data << ' ';
+            if (temp->left)
+                q.push(temp->left);
+            if (temp->right)
+                q.push(temp->right);
+        }
+    }
+
+    s.pop();
+    while (!s.empty())
+    {
+        node *temp = s.top();
+        s.pop();
+
+        if (temp == NULL)
+            cout << endl;
+        else
+        {
+            cout << temp->data << " ";
+        }
+    }
+}
+
 int main(void)
 {
 
@@ -64,6 +109,7 @@ int main(void)
     root = buildTree(root);
     cout << endl;
     levelOrderTraversal(root);
+    rlevelOrderTraversal(root);
     return 0;
 }
 
