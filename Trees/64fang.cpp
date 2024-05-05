@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <map>
 using namespace std;
 
 class Node
@@ -183,6 +184,68 @@ vector<int> boundry(Node *root)
     traverseRight(root->right, result);
 }
 
+// top view of the binary tree
+vector<int> topView(Node *root)
+{
+    vector<int> result;
+    queue<pair<Node *, int>> q;
+    map<int, int> topNodes;
+    q.push(make_pair(root, 0));
+
+    while (!q.empty())
+    {
+        pair<Node *, int> temp = q.front();
+        q.pop();
+
+        Node *frontNode = temp.first;
+        int index = temp.second;
+
+        // if already present then, do nothing...
+        if (topNodes.find(index) == topNodes.end())
+            topNodes[index] = frontNode->data;
+
+        if (frontNode->left)
+            q.push(make_pair(frontNode->left, index - 1));
+        if (frontNode->right)
+            q.push(make_pair(frontNode->right, index + 1));
+    }
+
+    for (auto val : topNodes)
+        result.push_back(val.second);
+    return result;
+}
+
+// bottom view of the binary tree
+vector<int> bottomView(Node *root)
+{
+    vector<int> result;
+    // for storing current node and it's index
+    queue<pair<Node *, int>> q;
+    // for storing all bottom viewed nodes
+    map<int, int> bottomNodes;
+    // pushging first node and it's index value
+    q.push(make_pair(root, 0));
+
+    while (!q.empty())
+    {
+        pair<Node *, int> temp = q.front();
+        q.pop();
+
+        Node *currentNode = temp.first;
+        int index = temp.second;
+
+        bottomNodes[index] = currentNode->data;
+
+        if (currentNode->left)
+            q.push(make_pair(currentNode->left, index - 1));
+        if (currentNode->right)
+            q.push(make_pair(currentNode->right, index + 1));
+    }
+    for (auto val : bottomNodes)
+        result.push_back(val.second);
+    return result;
+}
+
 // 1 2 3 4 5 -1 10 6 -1 9 8 12 11 -1 7 -1 -1 -1 -1 12 -1 -1 -1 14 -1 -1 -1
 int main(void)
 {
@@ -197,6 +260,18 @@ int main(void)
     cout << endl;
     cout << endl;
     vector<int> v1 = boundry(root);
+    for (auto val : v1)
+        cout << val << " ";
+
+    cout << endl;
+    cout << "Top view of the tree is : ";
+    v1 = topView(root);
+    for (auto val : v1)
+        cout << val << " ";
+
+    cout << endl;
+    cout << "Bottom view of the tree is : ";
+    v1 = bottomView(root);
     for (auto val : v1)
         cout << val << " ";
     return 0;
