@@ -125,6 +125,21 @@ int findDiameter(node *root)
     return diameter(root).first;
 }
 
+bool checkBalanced1(node *root)
+{
+    if (root == NULL)
+        return true;
+
+    bool isLeft = checkBalanced1(root->left);
+    bool isRight = checkBalanced1(root->right);
+    bool diff = abs(height(root->left) - height(root->right)) <= 1;
+
+    if (isLeft && isRight && diff)
+        return true;
+    else
+        return false;
+}
+
 pair<bool, int> checkBalanced(node *root)
 {
     if (root == NULL)
@@ -152,12 +167,80 @@ bool isBalanced(node *root)
     return checkBalanced(root).first;
 }
 
-// 1 2 3 4 5 6 7 -1 -1 -1 -1 -1 -1 -1 -1
+bool isIdentical(node *root1, node *root2)
+{
 
+    // base cases
+    if (root1 == NULL && root2 == NULL)
+        return true;
+    if (root1 == NULL && root2 != NULL)
+        return false;
+    if (root1 != NULL && root2 == NULL)
+        return false;
+
+    // both the nodes are not null
+    bool left = isIdentical(root1->left, root2->left);
+    bool right = isIdentical(root1->right, root2->right);
+
+    bool currentVal = root1->data == root2->data;
+
+    if (left && right && currentVal)
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
+// sum tree
+
+pair<bool, int> sumTree(node *root)
+{
+    // null
+    if (root == NULL)
+        return make_pair(true, 0);
+
+    // leaf node
+    if (root->left == NULL && root->right == NULL)
+        return make_pair(true, root->data);
+
+    // now it's normal node in tree
+    pair<bool, int> leftSumTree = sumTree(root->left);
+    pair<bool, int> rightSumTree = sumTree(root->right);
+
+    bool isLeftSumTreeOkay = leftSumTree.first;
+    bool isRightSumTreeOkay = rightSumTree.first;
+
+    bool isSumOkay = root->data == (leftSumTree.second + rightSumTree.second);
+
+    pair<bool, int> result;
+    if (isLeftSumTreeOkay && isRightSumTreeOkay && isSumOkay)
+    {
+        result.first = true;
+        result.second = 2 * root->data;
+    }
+    else
+    {
+        result.first = false;
+    }
+
+    return result;
+}
+
+bool isSumTree(node *root)
+{
+    return sumTree(root).first;
+}
+
+// 1 3 4 5 6 7 -1 -1 -1 -1 -1 -1 -1 -1
+// 14 3 4 1 2 2 2 -1 -1 -1 -1 -1 -1 -1 -1
 int main(void)
 {
-    node *root;
+    node *root, *root2;
     buildTreeFromLevelOrder(root);
+    cout << endl;
+    buildTreeFromLevelOrder(root2);
+
     cout << endl;
     levelOrder(root);
     cout << endl;
@@ -167,6 +250,12 @@ int main(void)
     // cout << "Diameter of the tree is : " << info.first;
     cout << "Diameter of the tree is : " << findDiameter(root);
     cout << endl;
+    // cout << "is balanced tree : " << checkBalanced1(root);
     cout << "is balanced tree : " << isBalanced(root);
+    cout << endl;
+    cout << "Is identical ? " << isIdentical(root, root2);
+    cout << endl;
+    cout << "Is Sum tree : " << isSumTree(root);
+
     return 0;
 }
