@@ -1,7 +1,7 @@
 #include <iostream>
 #include <queue>
 using namespace std;
-
+// TreeNode - node
 class node
 {
 public:
@@ -9,12 +9,13 @@ public:
     int data;
     node *right;
 
-    node(int data) : left(NULL), data(data), right(NULL) {}
+    node(int data) : left(NULL), data(data), right(NULL){};
 };
 
-void buildFromLevelOrder(node *&root)
+void buildTreeFromLevelOrder(node *&root)
 {
-    cout << "Enter the root data : ";
+    queue<node *> q;
+    cout << "Enter root data : ";
     int data;
     cin >> data;
     if (data == -1)
@@ -22,7 +23,7 @@ void buildFromLevelOrder(node *&root)
         root = nullptr;
         return;
     }
-    queue<node *> q;
+
     root = new node(data);
     q.push(root);
 
@@ -31,20 +32,18 @@ void buildFromLevelOrder(node *&root)
         node *temp = q.front();
         q.pop();
 
-        cout << "Enter data left of - " << temp->data << " : ";
+        cout << "Enter data left of the : " << temp->data << " : ";
         int leftData;
         cin >> leftData;
-
         if (leftData != -1)
         {
             temp->left = new node(leftData);
             q.push(temp->left);
         }
 
-        cout << "Enter data right of - " << temp->data << " : ";
+        cout << "Enter data right of the : " << temp->right << " : ";
         int rightData;
         cin >> rightData;
-
         if (rightData != -1)
         {
             temp->right = new node(rightData);
@@ -52,24 +51,21 @@ void buildFromLevelOrder(node *&root)
         }
     }
 }
-
-void levelOrder(node *root, int &count)
+void levelOrder(node *root)
 {
     queue<node *> q;
     q.push(root);
     q.push(nullptr);
-
     while (!q.empty())
     {
         node *temp = q.front();
-
         q.pop();
 
-        if (temp == NULL)
+        if (temp == nullptr)
         {
             cout << endl;
             if (!q.empty())
-                q.push(NULL);
+                q.push(nullptr);
         }
         else
         {
@@ -78,23 +74,17 @@ void levelOrder(node *root, int &count)
                 q.push(temp->left);
             if (temp->right)
                 q.push(temp->right);
-            if (!temp->left && !temp->right)
-                count++;
         }
     }
 }
+// 1 2 3 4 5 6 7 -1 -1 -1 -1 -1 -1 -1 -1
 
 int main(void)
 {
     node *root;
-    buildFromLevelOrder(root);
+    buildTreeFromLevelOrder(root);
     cout << endl;
-
-    int count = 0;
-    levelOrder(root, count);
-    cout << "count of the leaf nodes are : " << count;
+    levelOrder(root);
 
     return 0;
 }
-
-// 1 2 3 4 5 6 7 -1 -1 -1 -1 -1 -1 -1 -1 
