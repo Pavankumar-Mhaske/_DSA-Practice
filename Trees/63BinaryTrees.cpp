@@ -124,6 +124,34 @@ int findDiameter(node *root)
 {
     return diameter(root).first;
 }
+
+pair<bool, int> checkBalanced(node *root)
+{
+    if (root == NULL)
+        return make_pair(true, 0);
+
+    pair<bool, int> leftTree = checkBalanced(root->left);
+    pair<bool, int> rightTree = checkBalanced(root->right);
+
+    bool isLeft = leftTree.first;
+    bool isRight = rightTree.first;
+    bool diff = abs(leftTree.second - rightTree.second) <= 1;
+
+    pair<bool, int> result;
+    result.second = max(leftTree.second, rightTree.second) + 1;
+    if (isLeft && isRight && diff)
+        result.first = true;
+    else
+        result.first = false;
+
+    return result;
+}
+
+bool isBalanced(node *root)
+{
+    return checkBalanced(root).first;
+}
+
 // 1 2 3 4 5 6 7 -1 -1 -1 -1 -1 -1 -1 -1
 
 int main(void)
@@ -138,6 +166,7 @@ int main(void)
     // pair<int, int> info = diameter(root);
     // cout << "Diameter of the tree is : " << info.first;
     cout << "Diameter of the tree is : " << findDiameter(root);
-
+    cout << endl;
+    cout << "is balanced tree : " << isBalanced(root);
     return 0;
 }
