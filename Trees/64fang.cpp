@@ -3,18 +3,18 @@
 #include <vector>
 using namespace std;
 
-class node
+class Node
 {
 public:
-    node *left;
+    Node *left;
     int data;
-    node *right;
-    node(int data) : left(nullptr), data(data), right(nullptr){};
+    Node *right;
+    Node(int data) : left(nullptr), data(data), right(nullptr){};
 };
 
-void buildLevelOrder(node *&root)
+void buildLevelOrder(Node *&root)
 {
-    queue<node *> q;
+    queue<Node *> q;
     cout << "Enter the root data : ";
     int data;
     cin >> data;
@@ -25,12 +25,12 @@ void buildLevelOrder(node *&root)
         return;
     }
 
-    root = new node(data);
+    root = new Node(data);
     q.push(root);
 
     while (!q.empty())
     {
-        node *frontNode = q.front();
+        Node *frontNode = q.front();
         q.pop();
 
         cout << "Enter data to the left of : " << frontNode->data << " : ";
@@ -38,7 +38,7 @@ void buildLevelOrder(node *&root)
         cin >> leftData;
         if (leftData != -1)
         {
-            frontNode->left = new node(leftData);
+            frontNode->left = new Node(leftData);
             q.push(frontNode->left);
         }
 
@@ -47,15 +47,15 @@ void buildLevelOrder(node *&root)
         cin >> rightData;
         if (rightData != -1)
         {
-            frontNode->right = new node(rightData);
+            frontNode->right = new Node(rightData);
             q.push(frontNode->right);
         }
     }
 }
 
-void levelOrder(node *root)
+void levelOrder(Node *root)
 {
-    queue<node *> q;
+    queue<Node *> q;
     if (root == NULL)
     {
         return;
@@ -64,7 +64,7 @@ void levelOrder(node *root)
     q.push(NULL);
     while (!q.empty())
     {
-        node *temp = q.front();
+        Node *temp = q.front();
         q.pop();
 
         if (temp == NULL)
@@ -84,10 +84,11 @@ void levelOrder(node *root)
     }
 }
 
-vector<int> zigzag(node *root)
+// zigzag Traversal
+vector<int> zigzag(Node *root)
 {
     vector<int> result;
-    queue<node *> q;
+    queue<Node *> q;
     q.push(root);
     bool rightToLeft = true;
 
@@ -99,7 +100,7 @@ vector<int> zigzag(node *root)
 
         for (int i = 0; i < size; i++)
         {
-            node *temp = q.front();
+            Node *temp = q.front();
             q.pop();
 
             int index = rightToLeft ? i : size - i - 1;
@@ -120,14 +121,83 @@ vector<int> zigzag(node *root)
     return result;
 }
 
+// Boundry Traversal
+bool isLeafNode(Node *node)
+{
+    return (node->left == NULL && node->right == NULL);
+}
+void traverseLeft(Node *root, vector<int> &result)
+{
+    if (root == NULL || isLeafNode(root))
+        return;
+
+    result.push_back(root->data);
+    if (root->left)
+        traverseLeft(root->left, result);
+    else
+        traverseLeft(root->right, result);
+}
+
+void traverseLeaf(Node *root, vector<int> &result)
+{
+    if (root == NULL)
+        return;
+    if (isLeafNode(root))
+    {
+
+        result.push_back(root->data);
+        return;
+    }
+
+    traverseLeaf(root->left, result);
+    traverseLeaf(root->right, result);
+}
+
+void traverseRight(Node *root, vector<int> &result)
+{
+    if (root == NULL || isLeafNode(root))
+        return;
+
+    if (root->right)
+        traverseRight(root->right, result);
+    else
+        traverseRight(root->left, result);
+
+    result.push_back(root->data);
+}
+vector<int> boundry(Node *root)
+{
+    vector<int> result;
+    if (root == NULL)
+        return result;
+    // inserting the root node
+    result.push_back(root->data);
+
+    // inserting all left nodes -{ leaf nodes }
+    traverseLeft(root->left, result);
+
+    // inserting all leaf nodes
+    traverseLeaf(root, result);
+
+    // inserting all right nodes - { leaf nodes }
+    traverseRight(root->right, result);
+}
+
+// 1 2 3 4 5 -1 10 6 -1 9 8 12 11 -1 7 -1 -1 -1 -1 12 -1 -1 -1 14 -1 -1 -1
 int main(void)
 {
-    node *root;
+    Node *root;
     buildLevelOrder(root);
     cout << endl;
     levelOrder(root);
     vector<int> v = zigzag(root);
     for (auto val : v)
+        cout << val << " ";
+
+    cout << endl;
+    cout << endl;
+    vector<int> v1 = boundry(root);
+    for (auto val : v1)
         cout << val << " ";
     return 0;
 }
