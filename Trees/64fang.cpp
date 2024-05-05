@@ -246,7 +246,48 @@ vector<int> bottomView(Node *root)
     return result;
 }
 
+// left view of the binary tree
+void solve1(Node *root, vector<int> &result, int level)
+{
+    if (root == NULL)
+        return;
+
+    if (level == result.size())
+        result.push_back(root->data);
+
+    solve1(root->left, result, level + 1);
+    solve1(root->right, result, level + 1);
+}
+
+vector<int> leftView(Node *root)
+{
+    vector<int> result;
+    solve1(root, result, 0);
+    return result;
+}
+
+// right view of the binary tree
+void solve2(Node *root, vector<int> &result, int level)
+{
+    if (root == NULL)
+        return;
+
+    if (level == result.size())
+        result.push_back(root->data);
+
+    solve2(root->right, result, level + 1);
+    solve2(root->left, result, level + 1);
+}
+
+vector<int> rightView(Node *root)
+{
+    vector<int> result;
+    solve2(root, result, 0);
+    return result;
+}
+
 // 1 2 3 4 5 -1 10 6 -1 9 8 12 11 -1 7 -1 -1 -1 -1 12 -1 -1 -1 14 -1 -1 -1
+
 int main(void)
 {
     Node *root;
@@ -274,6 +315,19 @@ int main(void)
     v1 = bottomView(root);
     for (auto val : v1)
         cout << val << " ";
+
+    cout << endl;
+    cout << "left view of the tree is : ";
+    v1 = leftView(root);
+    for (auto val : v1)
+        cout << val << " ";
+
+    cout << endl;
+    cout << "right view of the tree is : ";
+    v1 = rightView(root);
+    for (auto val : v1)
+        cout << val << " ";
+
     return 0;
 }
 
