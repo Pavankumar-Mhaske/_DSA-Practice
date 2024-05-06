@@ -30,6 +30,15 @@ void inOrder(Node *root)
     inOrder(root->right);
 }
 
+void preOrder(Node *root)
+{
+    if (!root)
+        return;
+    cout << root->data << " ";
+    preOrder(root->left);
+    preOrder(root->right);
+}
+
 void levelOrderTraversal(Node *root)
 {
     queue<Node *> q;
@@ -76,7 +85,7 @@ void createMapping(int in[], map<int, int> &nodeToIndex, int n)
     }
 }
 
-Node *solve(int in[], int pre[], int &preOrderIndex, int inOrderStart, int inOrderEnd, int n, map<int, int> &nodeToIndex)
+Node *solve1(int in[], int pre[], int &preOrderIndex, int inOrderStart, int inOrderEnd, int n, map<int, int> &nodeToIndex)
 {
     if (preOrderIndex >= n || inOrderStart > inOrderEnd)
     {
@@ -89,30 +98,62 @@ Node *solve(int in[], int pre[], int &preOrderIndex, int inOrderStart, int inOrd
     int position = nodeToIndex[element];
 
     //
-    root->left = solve(in, pre, preOrderIndex, inOrderStart, position - 1, n, nodeToIndex);
-    root->right = solve(in, pre, preOrderIndex, position + 1, inOrderEnd, n, nodeToIndex);
+    root->left = solve1(in, pre, preOrderIndex, inOrderStart, position - 1, n, nodeToIndex);
+    root->right = solve1(in, pre, preOrderIndex, position + 1, inOrderEnd, n, nodeToIndex);
 
     return root;
 }
 
-Node *buildTree(int in[], int pre[], int n)
+Node *buildTree1(int in[], int pre[], int n)
 {
     int preOrderIndex = 0;
     map<int, int> nodeToIndex;
     createMapping(in, nodeToIndex, n);
-    Node *root = solve(in, pre, preOrderIndex, 0, n - 1, n, nodeToIndex);
+    Node *root = solve1(in, pre, preOrderIndex, 0, n - 1, n, nodeToIndex);
     return root;
+}
+
+// construct tree from InOrder and PostOrder
+
+Node *solve(int in[], int post[], int &postOrderIndex, int inOrderStart, int inOrderEnd, int n, map<int, int> &nodeToIndex)
+{
+    if (postOrderIndex < 0 || inOrderStart > inOrderEnd)
+    {
+        return NULL;
+    }
+
+    int element = post[postOrderIndex--];
+    Node *root = new Node(element);
+    int position = nodeToIndex[element];
+
+    // recursive calls....
+    // for postOrder first build right sub-tree.
+    root->right = solve(in, post, postOrderIndex, position + 1, inOrderEnd, n, nodeToIndex);
+    root->left = solve(in, post, postOrderIndex, inOrderStart, position - 1, n, nodeToIndex);
+
+    return root;
+}
+Node *buildTree(int in[], int post[], int n)
+{
+    map<int, int> nodeToIndex;
+    createMapping(in, nodeToIndex, n);
+    int postOrderIndex = n - 1;
+    return solve(in, post, postOrderIndex, 0, n - 1, n, nodeToIndex);
 }
 
 int main(void)
 {
-    int in[] = {3, 1, 4, 0, 5, 2};
-    int pre[] = {0, 1, 3, 4, 2, 5};
-    int n = 6;
-    Node *root = buildTree(in, pre, n);
-    postOrder(root);
+    // int in[] = {3, 1, 4, 0, 5, 2};
+    // int pre[] = {0, 1, 3, 4, 2, 5};
+    int in[] = {4, 8, 2, 5, 1, 6, 3, 7};
+    int post[] = {8, 4, 5, 2, 6, 7, 3, 1};
+    int n = 8;
+    // Node *root = buildTree1(in, pre, n);
+    Node *root = buildTree(in, post, n);
+    // postOrder(root);
     // cout << endl;
     // inOrder(root);
+    preOrder(root);
     // cout << endl;
     // levelOrderTraversal(root);
     return 0;
