@@ -166,6 +166,7 @@ void traverseRight(Node *root, vector<int> &result)
 
     result.push_back(root->data);
 }
+
 vector<int> boundry(Node *root)
 {
     vector<int> result;
