@@ -105,6 +105,7 @@ void solve(Node *root, int sum, int &maxSum, int len, int &maxLen)
     solve(root->left, sum, maxSum, len + 1, maxLen);
     solve(root->right, sum, maxSum, len + 1, maxLen);
 }
+
 int sumOfLongRootToLeafPath(Node *root)
 {
 
@@ -119,6 +120,58 @@ int sumOfLongRootToLeafPath(Node *root)
     return maxSum;
 }
 
+// lowest common ancestor (LCA)
+Node *lca(Node *root, int n1, int n2)
+{
+    if (root == NULL)
+        return NULL;
+    if (root->data == n1 || root->data == n2)
+        return root;
+
+    Node *leftAns = lca(root->left, n1, n2);
+    Node *rightAns = lca(root->right, n1, n2);
+
+    if (leftAns != NULL && rightAns != NULL)
+        return root;
+    else if (leftAns != NULL && rightAns == NULL)
+        return leftAns;
+    else if (leftAns == NULL && rightAns != NULL)
+        return rightAns;
+    else
+        return NULL;
+}
+
+// k sum paths
+
+void solve(Node *root, int k, int &count, vector<int> path)
+{
+    if (root == NULL)
+        return;
+
+    path.push_back(root->data);
+
+    solve(root->left, k, count, path);
+    solve(root->right, k, count, path);
+
+    int sum = 0;
+    int size = path.size();
+    for (int i = size - 1; i >= 0; i--)
+    {
+        sum += path[i];
+        if (sum == k)
+            count++;
+    }
+    path.pop_back();
+}
+
+int sumk(Node *root, int k)
+{
+    vector<int> path;
+    int count = 0;
+    solve(root, k, count, path);
+    return count;
+}
+
 int main(void)
 {
     Node *root;
@@ -127,4 +180,12 @@ int main(void)
     levelOrder(root);
     cout << endl;
     cout << "Sum of all nodes in bloodline is : " << sumOfLongRootToLeafPath(root);
+    cout << endl;
+    int n1 = 7, n2 = 8;
+    cout << "LCA is : " << lca(root, n1, n2)->data;
+    cout << endl;
+    int k = 5;
+    cout << "K sum paths are : " << sumk(root, k);
 }
+
+// 1 3 -1 2 1 4 5 -2 -2 1 -2 1 2 -2 6 -2 -2 -2 -2 -2 -2 -2 -2
