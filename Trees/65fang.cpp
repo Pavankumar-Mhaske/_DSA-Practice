@@ -172,6 +172,145 @@ int sumk(Node *root, int k)
     return count;
 }
 
+// kth ancestor in a tree
+
+/*
+void solve(Node *root, int &ancestor, vector<int> path, int val, int kth)
+{
+    if (root == NULL)
+        return;
+
+    path.push_back(root->data);
+
+    solve(root->left, ancestor, path, val, kth);
+    solve(root->right, ancestor, path, val, kth);
+
+    if (path.back() == val)
+    {
+        int size = path.size();
+        int index = size - 1 - kth;
+        if (index >= 0)
+        {
+            ancestor = path[index];
+            return;
+        }
+    }
+}
+
+int kthAncestor(Node *root, int val, int kth)
+{
+    int ancestor = INT_MIN;
+    vector<int> path;
+    solve(root, ancestor, path, val, kth);
+    return ancestor;
+}
+
+
+Node *solve(Node *root, int node, int &k)
+{
+    if (root == NULL)
+        return NULL;
+
+    if (root->data == node)
+    {
+        k--;
+        return root;
+    }
+
+    Node *leftAns = solve(root->left, node, k);
+    Node *rightAns = solve(root->right, node, k);
+
+    cout << root->data << " | " << k << " | " << endl;
+    if (leftAns != NULL)
+    {
+
+        if (k > 0)
+        {
+            k--;
+            return leftAns;
+        }
+        if (k == 0)
+        {
+            leftAns = root;
+            k--;
+        }
+        return leftAns;
+    }
+    else if (rightAns != NULL)
+    {
+        if (k > 0)
+        {
+            k--;
+            return rightAns;
+        }
+        if (k == 0)
+        {
+            rightAns = root;
+            k--;
+        }
+        return rightAns;
+    }
+    else
+        return NULL;
+}
+
+int kthAncestor(Node *root, int node, int k)
+{
+    Node *ans = solve(root, node, k);
+    cout << "VAlue of the K is : " << k;
+    cout << endl;
+    if (k > 0 || node == ans->data)
+        return -1;
+    else
+        return ans->data;
+}
+
+
+*/
+
+Node *solve(Node *root, int node, int &k)
+{
+    if (root == NULL)
+        return NULL;
+    if (root->data == node)
+        return root;
+
+    Node *leftAns = solve(root->left, node, k);
+    Node *rightAns = solve(root->right, node, k);
+
+    if (leftAns != NULL)
+    {
+        k--;
+        if (k <= 0)
+        {
+            k = INT_MAX;
+            return root;
+        }
+        return leftAns;
+    }
+    if (rightAns != NULL)
+    {
+        k--;
+        if (k <= 0)
+        {
+            k = INT_MAX;
+            return root;
+        }
+        return rightAns;
+    }
+    return NULL;
+}
+
+int kthAncestor(Node *root, int node, int k)
+{
+    Node *result = solve(root, node, k);
+    if (result == NULL || result->data == node)
+    {
+        return -1;
+    }
+    return result->data;
+}
+
 int main(void)
 {
     Node *root;
@@ -182,10 +321,13 @@ int main(void)
     cout << "Sum of all nodes in bloodline is : " << sumOfLongRootToLeafPath(root);
     cout << endl;
     int n1 = 7, n2 = 8;
-    cout << "LCA is : " << lca(root, n1, n2)->data;
+    // cout << "LCA is : " << lca(root, n1, n2)->data;
     cout << endl;
     int k = 5;
-    cout << "K sum paths are : " << sumk(root, k);
+    // cout << "K sum paths are : " << sumk(root, k);
+    cout << endl;
+    cout << "1 st ancestor of 8 is : " << kthAncestor(root, 8, 4);
 }
 
 // 1 3 -1 2 1 4 5 -2 -2 1 -2 1 2 -2 6 -2 -2 -2 -2 -2 -2 -2 -2
+// 1 2 3 4 5 6 7 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1 -1
