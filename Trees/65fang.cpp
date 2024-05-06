@@ -311,6 +311,29 @@ int kthAncestor(Node *root, int node, int k)
     return result->data;
 }
 
+// maximum sum of the non-adjusent nodes
+pair<int, int> solve(Node *root)
+{
+    if (root == NULL)
+        return make_pair(0, 0);
+
+    pair<int, int> leftSum = solve(root->left);
+    pair<int, int> rightSum = solve(root->right);
+
+    pair<int, int> res;
+    // including all the nodes in current level
+    res.first = root->data + leftSum.second + rightSum.second;
+    // excluding all the nodes in current level
+    res.second = max(leftSum.first, leftSum.second) + max(rightSum.first, rightSum.second);
+
+    return res;
+}
+int getMaxSum(Node *root)
+{
+    pair<int, int> ans = solve(root);
+    return max(ans.first, ans.second);
+}
+
 int main(void)
 {
     Node *root;
@@ -324,10 +347,13 @@ int main(void)
     // cout << "LCA is : " << lca(root, n1, n2)->data;
     cout << endl;
     int k = 5;
-    // cout << "K sum paths are : " << sumk(root, k);
+    cout << "K sum paths are : " << sumk(root, k);
     cout << endl;
     cout << "1 st ancestor of 8 is : " << kthAncestor(root, 8, 4);
+    cout << endl;
+    cout << "max sum excluding adjacent nodes is : " << getMaxSum(root);
 }
 
 // 1 3 -1 2 1 4 5 -2 -2 1 -2 1 2 -2 6 -2 -2 -2 -2 -2 -2 -2 -2
 // 1 2 3 4 5 6 7 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1 -1
+// 1 2 3 4 -1 5 6 -1 -1 -1 -1 -1 -1
